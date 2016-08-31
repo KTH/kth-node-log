@@ -1,0 +1,30 @@
+{
+  "name": "kth-node-log",
+  "version": "1.0.0",
+  "description": "Logging module for Node.js applications.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KTH/kth-node-log"
+  },
+  "scripts": {
+    "codecheck": "standard",
+    "preversion": "npm run codecheck",
+    "postversion": "git push && git push --tags"
+  },
+  "dependencies": {
+    "bunyan": "^1.5.1",
+    "bunyan-format": "^0.2.1",
+    "bunyan-lumberjack": "^1.0.3",
+    "lodash": "^4.11.2"
+  },
+  "keywords": [
+    "node",
+    "logging",
+    "syslog"
+  ],
+  "private": true,
+  "devDependencies": {
+    "standard": "^7.0.0"
+  }
+}
