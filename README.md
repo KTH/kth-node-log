@@ -1,7 +1,7 @@
 kth-node-log
 ============
 
-Small logging library for node.js.
+Logging module for Node.js applications.
 
 ## Usage
 
