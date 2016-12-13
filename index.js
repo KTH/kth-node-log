@@ -6,9 +6,9 @@
  var log = require('kth-node-log')
 
  log.init({
- console: {
- enabled: true
- }
+  console: {
+    enabled: true
+  }
  })
 
  log.info('hello from info')
@@ -117,6 +117,14 @@ function init (options) {
       level: options.logstash.level || options.level,
       type: 'raw',
       stream: stream
+    })
+  }
+
+  // Default to console if no streams are supplied
+  if (streams.length === 0) {
+    streams.push({
+      level: options.level,
+      stream: format(options.console.format)
     })
   }
 
