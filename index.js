@@ -66,10 +66,9 @@ const defaults = {
   }
 }
 
-function init (options) {
+function init (options, optionalConfiguration = {}) {
   if (logger) {
-    logger.warn('log.init called more than once')
-    return logger
+    logger.info('log.init called more than once')
   }
 
   const streams = []
@@ -128,7 +127,7 @@ function init (options) {
     })
   }
 
-  logger = bunyan.createLogger({
+  const logConfiguration = {
     name: options.name,
     app: options.app,
     env: options.env,
@@ -136,9 +135,17 @@ function init (options) {
     serializers: options.serializers,
     src: options.src,
     streams: streams
-  })
+  }
 
-  log.trace('log initialized')
+  for (var key in optionalConfiguration) {
+    if (optionalConfiguration.hasOwnProperty(key)) {
+      logConfiguration[key] = optionalConfiguration[key]
+    }
+  }
+
+  logger = bunyan.createLogger(logConfiguration)
+
+  log.trace('log initialized with configuration',logConfiguration)
 
   return logger
 }
