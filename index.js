@@ -145,7 +145,7 @@ function init (options, optionalConfiguration = {}) {
 
   logger = bunyan.createLogger(logConfiguration)
 
-  log.trace('log initialized with configuration',logConfiguration)
+  log.trace('log initialized with configuration', logConfiguration)
 
   return logger
 }
