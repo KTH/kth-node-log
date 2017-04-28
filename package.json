@@ -8,8 +8,9 @@
     "url": "https://github.com/KTH/kth-node-log"
   },
   "scripts": {
+    "test": "node_modules/mocha/bin/mocha test/**/test-*.js",
     "codecheck": "standard",
-    "preversion": "npm run codecheck",
+    "preversion": "npm run codecheck && npm run test",
     "postversion": "git push && git push --tags"
   },
   "dependencies": {
@@ -25,6 +26,8 @@
   ],
   "private": true,
   "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.3.0",
     "standard": "^7.0.0"
   }
 }
