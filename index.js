@@ -19,7 +19,7 @@ const bunyanFormat = require('bunyan-format')
 var defaults = {
   name: 'kth-node-log',
   env: process.env.NODE_ENV,
-  level: 'debug' 
+  level: 'debug'
 }
 
 /* Print to console */
@@ -31,10 +31,7 @@ function onWrite (c) {
   }
 }
 
-var logger = {}
 function initLogger (inpOptions) {
-  console.log("*** CREATING")
-
   let options = Object.assign({}, defaults, inpOptions)
 
   let loggerOptions = {
@@ -48,7 +45,7 @@ function initLogger (inpOptions) {
   }
 
   let logger = bunyan.createLogger(loggerOptions)
-  
+
   // Mutating module.exports to maintian compatibility with old apps
   ;['debug', 'info', 'warn', 'error'].forEach((key) => {
     module.exports[key] = logger[key].bind(logger)
