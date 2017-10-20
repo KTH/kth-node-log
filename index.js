@@ -19,7 +19,10 @@ const bunyanFormat = require('bunyan-format')
 var defaults = {
   name: 'kth-node-log',
   env: process.env.NODE_ENV,
-  level: 'debug'
+  level: 'debug',
+  // Using
+  // https://github.com/trentm/node-bunyan#recommendedbest-practice-fields
+  serializers: { err: bunyan.stdSerializers.err }
 }
 
 /* Print to console */
@@ -36,7 +39,8 @@ function initLogger (inpOptions) {
 
   let loggerOptions = {
     name: options.name,
-    level: options.level
+    level: options.level,
+    serializers: options.serializers
   }
 
   if (options.env === undefined || options.env === 'development') {
