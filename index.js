@@ -51,7 +51,7 @@ function initLogger (inpOptions) {
   let logger = bunyan.createLogger(loggerOptions)
 
   // Mutating module.exports to maintian compatibility with old apps
-  ;['debug', 'info', 'warn', 'error', 'child'].forEach((key) => {
+  ;['debug', 'info', 'warn', 'trace', 'fatal', 'error', 'child'].forEach((key) => {
     module.exports[key] = logger[key].bind(logger)
   })
   module.exports.init = () => logger.info('kth-node-log already initialized, won\'t do it again')
