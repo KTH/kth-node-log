@@ -45,7 +45,7 @@ function initLogger (inpOptions) {
 
   if (options.env === undefined || options.env === 'development') {
     // Write to std out when not in production mode
-    loggerOptions['stream'] = bunyanFormat({ outputMode: 'short' }, { write: onWrite })
+    loggerOptions['stream'] = bunyanFormat({ outputMode: 'short' }, { write: options.onWrite || onWrite })
   }
 
   let logger = bunyan.createLogger(loggerOptions)
