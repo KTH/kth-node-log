@@ -77,5 +77,4 @@ describe('Logger', function () {
     // log.info is level 30
     log.info('Oops!')
   })
-
 })
