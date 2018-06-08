@@ -18,7 +18,7 @@ const bunyanFormat = require('bunyan-format')
 
 var defaults = {
   name: 'kth-node-log',
-  env: process.env.NODE_ENV,
+  env: process.env.LOGGING_OUTPUT_FORMAT || process.env.NODE_ENV,
   level: 'debug',
   // Using
   // https://github.com/trentm/node-bunyan#recommendedbest-practice-fields

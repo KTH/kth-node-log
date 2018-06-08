@@ -5,6 +5,12 @@ Logging module for Node.js applications.
 
 ## Usage
 
+The package will respect NODE_ENV and output serialized JSON in production
+and use ordinary output for development. To override this, set `LOGGING_OUTPUT_FORMAT`
+to development or production.
+
+### In your application
+
 ```javascript
 const log = require('kth-node-log')
 
