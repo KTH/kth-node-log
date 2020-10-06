@@ -89,7 +89,7 @@ function _showMessageAboutMissingInit() {
   // eslint-disable-next-line no-console
   console.warn(
     'You are using package "kth-node-log" before/without init(). ' +
-      "This might be fine in test environments but is possible unwanted when running your application."
+      "This might be fine in test environments but is most likely unwanted when running your application."
   );
   Global.messageShown = true;
 }
