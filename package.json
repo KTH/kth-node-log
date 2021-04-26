@@ -15,7 +15,7 @@
     "url": "https://github.com/KTH/kth-node-log"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha test/**/test-*.js",
+    "test": "mocha test/**/test-*.js",
     "build": "./build.sh",
     "prepare": "bash -c 'if [ -f ./node_modules/.bin/husky ]; then husky install; fi'"
   },
