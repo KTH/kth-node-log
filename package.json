@@ -16,7 +16,8 @@
   },
   "scripts": {
     "test": "node_modules/mocha/bin/mocha test/**/test-*.js",
-    "build": "./build.sh"
+    "build": "./build.sh",
+    "prepare": "husky install"
   },
   "dependencies": {
     "bunyan": "^1.8.15",
@@ -31,16 +32,11 @@
   "devDependencies": {
     "@kth/eslint-config-kth": "^1.0.10",
     "chai": "^4.3.4",
-    "eslint": "^7.24.0",
+    "eslint": "^7.25.0",
     "husky": "^6.0.0",
     "mocha": "^8.3.2",
     "prettier": "^2.2.1",
     "pretty-quick": "^3.1.0"
-  },
-  "eslintConfig": {
-    "extends": [
-      "@kth/eslint-config-kth"
-    ]
   },
   "prettier": {
     "arrowParens": "avoid",
