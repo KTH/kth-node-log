@@ -1,4 +1,6 @@
 /* eslint-env mocha */
+/* eslint-disable */
+
 'use strict'
 const expect = require('chai').expect
 
@@ -69,12 +71,23 @@ describe('Logger', function () {
     log.init({
       level: 40,
       env: 'development',
-      onWrite: (msg) => {
+      onWrite: msg => {
         expect(msg).to.equal(undefined)
-      }
+      },
     })
 
     // log.info is level 30
     log.info('Oops!')
+  })
+  it('error is logged', function () {
+    log.init({
+      level: 40,
+      env: 'development',
+      onWrite: msg => {
+        expect(msg).to.contain('hello')
+      },
+    })
+
+    log.error(new Error('hello'))
   })
 })
