@@ -5,15 +5,6 @@
 const bunyan = require('bunyan')
 const bunyanFormat = require('bunyan-format')
 
-const defaults = {
-  name: 'kth-node-log',
-  env: process.env.LOGGING_OUTPUT_FORMAT || process.env.NODE_ENV,
-  level: 'debug',
-  // Using
-  // https://github.com/trentm/node-bunyan#recommendedbest-practice-fields
-  serializers: { err: bunyan.stdSerializers.err },
-}
-
 /* Print to console */
 function onWrite(c) {
   if (c[c.length - 1] === '\n') {
@@ -23,6 +14,82 @@ function onWrite(c) {
     // eslint-disable-next-line no-console
     console.log(c)
   }
+}
+function sanitize(val) {
+  const mask = ['api_key', 'apikey', 'key', 'password', 'pwd']
+  if (val && typeof val === 'object') {
+    const rval = {}
+    for (const key of Object.keys(val)) {
+      if (Object.prototype.hasOwnProperty.call(val, key)) {
+        if (mask.includes(key.toLowerCase())) {
+          rval[key] = '*******'
+        } else {
+          rval[key] = val[key]
+        }
+      }
+    }
+    return rval
+  }
+  if (val && typeof val === 'string') {
+    let arr = []
+    arr = val
+      .split(',')
+      .filter(v => v.trim())
+      .map(v => {
+        if (v.includes('=')) {
+          const [p, pv] = v.split('=')
+          if (mask.includes(p.toLowerCase())) {
+            return `${p}=********`
+          }
+          return `${p}=${pv}`
+        }
+        return v
+      })
+    return JSON.stringify(arr)
+  }
+  return val
+}
+// Serialize an HTTP request.
+function reqSerializer(req) {
+  if (!req || !req.connection) return {}
+
+  const rval = {
+    method: req.method,
+    url: req.originalUrl || req.url,
+    accept: req.header('Accept'),
+    guid: req.header('Request-Guid'),
+    agent: req.header('User-Agent'),
+    hostname: req.hostname,
+    referer: req.header('Referer'),
+    path: req.path,
+    protocol: req.protocol,
+    secure: req.secure,
+    params: sanitize(req.params),
+    query: sanitize(req.query),
+    remoteAddress: req.connection.remoteAddress,
+    remotePort: req.connection.remotePort,
+  }
+
+  return rval
+}
+
+// Serialize an HTTP response.
+function resSerializer(res) {
+  if (!res || !res.statusCode) return {}
+  const rval = {
+    statusCode: res.statusCode,
+  }
+
+  return rval
+}
+
+const defaults = {
+  name: 'node-log',
+  env: process.env.NODE_ENV,
+  level: bunyan.INFO,
+  // Using
+  // https://github.com/trentm/node-bunyan#recommendedbest-practice-fields
+  serializers: { err: bunyan.stdSerializers.err, req: reqSerializer, res: resSerializer },
 }
 
 function initLogger(inpOptions) {
@@ -34,8 +101,9 @@ function initLogger(inpOptions) {
     serializers: options.serializers,
   }
 
-  if (options.env === undefined || options.env === 'development') {
+  if (options.env === undefined || options.env === 'development' || options.env === 'test') {
     // Write to std out when not in production mode
+    // @ts-ignore
     loggerOptions.stream = bunyanFormat({ outputMode: 'short' }, { write: options.onWrite || onWrite })
   }
 
@@ -82,7 +150,7 @@ function _showMessageAboutMissingInit() {
   }
   // eslint-disable-next-line no-console
   console.warn(
-    'You are using package "kth-node-log" before/without init(). ' +
+    'You are using package "@kth/log" before/without init(). ' +
       'This might be fine in test environments but is most likely unwanted when running your application.'
   )
   Global.messageShown = true

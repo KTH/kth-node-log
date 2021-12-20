@@ -1,103 +1,55 @@
-# kth-node-log [![Build Status](https://travis-ci.org/kth/kth-node-log.svg?branch=master)](https://travis-ci.org/kth/kth-node-log)
+# @kth/log
 
 Logging module for Node.js applications.
 
 ## Usage
 
 The package will respect NODE_ENV and output serialized JSON in production
-and use ordinary output for development. To override this, set `LOGGING_OUTPUT_FORMAT`
-to development or production.
+and use ordinary output for development.
+
+The package uses bunyan.stdSerializers.err for err and provides serializers for req and res objects. Only subset of fields are displayed by these serializers.
 
 ### In your application
 
 ```javascript
-const log = require("kth-node-log");
+const log = require('@kth/log')
 
 // in application setup, see full options below
 log.init({
-  console: {
-    enabled: true
-  }
-});
+  name: 'node-app',
+  level: 'warn',
+})
 
 // log usage
-log.info("hello from info, log level usually used in setup");
-log.warn("error that code handled and can recover from");
-log.error({ err: err }, "error that should be fixed in code");
-log.fatal("a really bad error that will crash the application");
-log.debug({ req: req, res: res }, "log a request and response, basic dev log");
-log.trace("granular logging, rarely used");
+log.info('hello from info, log level usually used in setup')
+log.warn('error that code handled and can recover from')
+log.error({ err: err }, 'error that should be fixed in code')
+log.fatal('a really bad error that will crash the application')
+log.debug({ req: req, res: res }, 'log a request and response, basic dev log')
+log.trace('granular logging, rarely used')
 
 // child logger
 // add custom values to all of the logs
-const myLog = log.child({ custom: "value" });
-myLog.info("hello");
+const myLog = log.child({ custom: 'value' })
+myLog.info('hello')
 ```
 
 ## Options
 
 ```javascript
 log.init({
-  // name of the logger, usually the same as application name
-  name: "node-logger",
+  // name of the logger, usually the same as application name, default is 'node-log'
+  name: 'node-app',
 
-  // application name, e.g. places-web
-  app: "node-app",
+  // If developement or test, the output is sent to stdout (console) using Bunyan-format 'short', default value is retrieved from process.env.NODE_ENV
+  env: 'development',
 
-  // usually set this to process.env.NODE_ENV
-  env: "dev",
+  // default logging level is INFO
+  level: 'debug',
 
-  // default logging level, can be overridden in stream configs
-  level: bunyan.INFO,
-
-  // use bunyan's own serializers
+  // Provide a custom serializer if necessary, default serializer for err, req and res are included in the package.
   serializers: {
-    req: bunyan.stdSerializers.req,
-    res: bunyan.stdSerializers.res,
-    err: bunyan.stdSerializers.err
+    err: customSerializer,
   },
-
-  // include source file, only enable in dev mode
-  src: false,
-
-  // enable debug logging
-  debugMode: false,
-
-  // stream, log to logstash using the lumberjack protocol
-  // see bunyan-lumberjack for more details
-  logstash: {
-    enabled: false,
-    level: null,
-    tlsOptions: {
-      host: "",
-      port: 0,
-      ca: []
-    },
-    lumberjackOptions: {
-      maxQueueSize: 500,
-      allowDrop: function(entry) {
-        // bunyan-lumberjack example is wrong,
-        // this method should be called "shouldKeep"
-        // return false to drop message, true to keep message
-        return entry.bunyanLevel > bunyan.INFO;
-      }
-    }
-  },
-
-  // stream, log to stdout using bunyan-format
-  // see bunyan-format for more details
-  console: {
-    enabled: false,
-    level: null,
-    format: {
-      outputMode: "short"
-    }
-  },
-
-  // stream, log raw json to stdout
-  stdout: {
-    enabled: false,
-    level: null
-  }
-});
+})
 ```
