@@ -32,8 +32,8 @@
     "syslog"
   ],
   "devDependencies": {
-    "@kth/eslint-config-kth": "^2.0.2",
-    "eslint": "^7.32.0",
+    "@kth/eslint-config-kth": "^3.0.6",
+    "eslint": "^8.12.0",
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "prettier": "^2.6.1",
