@@ -1,21 +1,15 @@
-/* eslint no-use-before-define: ["error", "nofunc"] */
-
-// @ts-check
-
 const bunyan = require('bunyan')
 const bunyanFormat = require('bunyan-format')
 
 /* Print to console */
-function onWrite(c) {
+function onWrite(c: string) {
   if (c[c.length - 1] === '\n') {
-    // eslint-disable-next-line no-console
-    console.log(c.substr(0, c.length - 1))
+    console.log(c.substring(0, c.length - 1))
   } else {
-    // eslint-disable-next-line no-console
     console.log(c)
   }
 }
-function sanitize(val) {
+function sanitize(val: any) {
   const mask = ['api_key', 'apikey', 'key', 'password', 'pwd']
   if (val && typeof val === 'object') {
     const rval = {}
@@ -50,7 +44,7 @@ function sanitize(val) {
   return val
 }
 // Serialize an HTTP request.
-function reqSerializer(req) {
+function reqSerializer(req: any) {
   if (!req || !req.connection) return {}
 
   const rval = {
@@ -92,6 +86,10 @@ const defaults = {
   serializers: { err: bunyan.stdSerializers.err, req: reqSerializer, res: resSerializer },
 }
 
+type LoggerInitOptions = {
+
+}
+
 function initLogger(inpOptions) {
   const options = { ...defaults, ...inpOptions }
 
@@ -103,7 +101,6 @@ function initLogger(inpOptions) {
 
   if (options.env === undefined || options.env === 'development' || options.env === 'test') {
     // Write to std out when not in production mode
-    // @ts-ignore
     loggerOptions.stream = bunyanFormat({ outputMode: 'short' }, { write: options.onWrite || onWrite })
   }
 
@@ -148,7 +145,6 @@ function _showMessageAboutMissingInit() {
   if (Global.messageShown) {
     return
   }
-  // eslint-disable-next-line no-console
   console.warn(
     'You are using package "@kth/log" before/without init(). ' +
       'This might be fine in test environments but is most likely unwanted when running your application.'
