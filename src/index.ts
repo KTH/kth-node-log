@@ -1,5 +1,6 @@
-const bunyan = require('bunyan')
-const bunyanFormat = require('bunyan-format')
+import bunyan from 'bunyan'
+import bunyanFormat from 'bunyan-format'
+import { type Request, type Response } from 'express'
 
 /* Print to console */
 function onWrite(c: string) {
@@ -25,7 +26,7 @@ function sanitize(val: any) {
     return rval
   }
   if (val && typeof val === 'string') {
-    let arr = []
+    let arr: string[] = []
     arr = val
       .split(',')
       .filter(v => v.trim())
@@ -44,7 +45,7 @@ function sanitize(val: any) {
   return val
 }
 // Serialize an HTTP request.
-function reqSerializer(req: any) {
+function reqSerializer(req: Request) {
   if (!req || !req.connection) return {}
 
   const rval = {
@@ -68,7 +69,7 @@ function reqSerializer(req: any) {
 }
 
 // Serialize an HTTP response.
-function resSerializer(res) {
+function resSerializer(res: Response) {
   if (!res || !res.statusCode) return {}
   const rval = {
     statusCode: res.statusCode,
@@ -87,16 +88,20 @@ const defaults = {
 }
 
 type LoggerInitOptions = {
-
+  name: string
+  level: string | number
+  env?: string
+  onWrite?: any
 }
 
-function initLogger(inpOptions) {
+function init(inpOptions: LoggerInitOptions) {
   const options = { ...defaults, ...inpOptions }
 
   const loggerOptions = {
     name: options.name,
     level: options.level,
     serializers: options.serializers,
+    stream: '',
   }
 
   if (options.env === undefined || options.env === 'development' || options.env === 'test') {
@@ -105,20 +110,15 @@ function initLogger(inpOptions) {
   }
 
   const logger = bunyan.createLogger(loggerOptions)
-
-  // Mutating module.exports to maintian compatibility with old apps
-  ;['debug', 'info', 'warn', 'trace', 'fatal', 'error', 'child'].forEach(key => {
-    module.exports[key] = logger[key].bind(logger)
-  })
-  module.exports.init = () => logger.info("kth-node-log already initialized, won't do it again")
+  return logger
 }
 
 /**
  * Bunyan logger wrapper
  * @type {{init:Function,child:Function,trace:Function,debug:Function,info:Function,warn:Function,error:Function,fatal:Function}}
  */
-module.exports = {
-  init: initLogger,
+export default {
+  init,
 
   debug: _showMessageAboutMissingInit,
   info: _showMessageAboutMissingInit,
@@ -127,7 +127,7 @@ module.exports = {
   fatal: _showMessageAboutMissingInit,
   error: _showMessageAboutMissingInit,
   child: () => ({
-    init: initLogger,
+    init,
     debug: _showMessageAboutMissingInit,
     info: _showMessageAboutMissingInit,
     warn: _showMessageAboutMissingInit,

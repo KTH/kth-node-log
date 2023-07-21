@@ -1,4 +1,4 @@
-'use strict'
+import log from './index'
 
 const mockOnWrite = jest.fn().mockImplementation(msg => msg)
 /*
@@ -36,19 +36,21 @@ function buildRes(overrides = {}) {
   return res
 }
 
+const initOptions = {
+  name: 'test',
+  level: 20,
+}
+
 describe(`Logger`, () => {
   afterAll(() => jest.resetAllMocks())
 
-  let log
-
   beforeEach(() => {
     jest.resetModules()
-    log = require('./index.js')
   })
 
   afterEach(() => {
     //  Clear require cache so we can reinitialize
-    // delete require.cache[require.resolve('../index.js')]
+    // delete require.cache[require.resolve('../index.ts')]
     // log = undefined
   })
 
@@ -57,12 +59,12 @@ describe(`Logger`, () => {
   })
 
   test('can be initialised', () => {
-    log.init()
+    log.init(initOptions)
     expect(log).not.toBeUndefined()
   })
 
   test('can call logger.child', () => {
-    log.init()
+    log.init(initOptions)
     let theError
     try {
       log.child()
@@ -73,81 +75,86 @@ describe(`Logger`, () => {
   })
 
   test('has .trace', () => {
-    log.init()
+    log.init(initOptions)
     expect(typeof log.trace).toBe('function')
   })
 
   test('has .debug', () => {
-    log.init()
+    log.init(initOptions)
     expect(typeof log.debug).toBe('function')
   })
 
   test('has .info', () => {
-    log.init()
+    log.init(initOptions)
     expect(typeof log.info).toBe('function')
   })
 
   test('has .warn', () => {
-    log.init()
+    log.init(initOptions)
     expect(typeof log.warn).toBe('function')
   })
 
   test('has .error', () => {
-    log.init()
+    log.init(initOptions)
     expect(typeof log.error).toBe('function')
   })
 
   test('has .fatal', () => {
-    log.init()
+    log.init(initOptions)
     expect(typeof log.fatal).toBe('function')
   })
 
   test('respects level is set to lower', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 20,
       env: 'development',
       onWrite: mockOnWrite,
     })
     // log.info is level 30
-    log.info('Oops!')
+    logger.info('Oops!')
     expect(mockOnWrite).toHaveBeenCalledTimes(1)
   })
 
   test('respects level is set to the same', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 30,
       env: 'development',
       onWrite: mockOnWrite,
     })
     // log.info is level 30
-    log.info('Oops same level!')
+    logger.info('Oops same level!')
     expect(mockOnWrite).toHaveBeenCalledTimes(1)
   })
 
   test('respects level is set to higher ', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 40,
       env: 'development',
       onWrite: mockOnWrite,
     })
     // log.info is level 30
-    log.info('Oops should not be displayed!')
+    logger.info('Oops should not be displayed!')
     expect(mockOnWrite).not.toHaveBeenCalledTimes(1)
   })
 
   test('error is logged', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 'warn',
       env: 'development',
       onWrite: msg => {
         expect(JSON.stringify(msg)).toContain('hello')
       },
     })
-    log.error(new Error('hello'))
+    logger.error(new Error('hello'))
   })
 
   test('req serializer is run to filter sensitive info', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 'DEBUG',
       env: 'development',
       onWrite: msg => {
@@ -165,25 +172,26 @@ describe(`Logger`, () => {
       params: { api_key: '123456', name: 'foo', password: 'secret' },
     })
 
-    log.info({ req })
+    logger.info({ req })
 
     req = buildReq({
       url: 'hello.html',
       headers: { api_key: '123456' },
       query: { api_key: '123456', name: 'foo', password: 'secret' },
     })
-    log.info({ req })
+    logger.info({ req })
 
     req = buildReq({
       url: 'hello.html',
       headers: { api_key: '123456' },
       query: 'api_key=123456',
     })
-    log.info({ req })
+    logger.info({ req })
   })
 
   test('res serializer is run to filter out to include only status code.', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 40,
       env: 'development',
       onWrite: msg => {
@@ -192,11 +200,12 @@ describe(`Logger`, () => {
       },
     })
     const res = buildRes({ statusCode: 200, body: 'blablablahoppsan' })
-    log.error({ res })
+    logger.error({ res })
   })
 
   test('err serializer is run.', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 40,
       env: 'development',
       onWrite: msg => {
@@ -204,26 +213,28 @@ describe(`Logger`, () => {
       },
     })
 
-    log.error({ err: new Error('hoppsan hejsan') })
+    logger.error({ err: new Error('hoppsan hejsan') })
   })
 
   test('child log respects log level set to lower', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 20,
       env: 'development',
       onWrite: mockOnWrite,
     })
-    const childlog = log.child({ package: 'node-common' })
+    const childlog = logger.child({ package: 'node-common' })
     childlog.info('hoppsan')
     expect(mockOnWrite).toHaveBeenCalledTimes(1)
   })
   test('child log respects log level set to higher', () => {
-    log.init({
+    const logger = log.init({
+      name: 'test',
       level: 40,
       env: 'development',
       onWrite: mockOnWrite,
     })
-    const childlog = log.child({ package: 'node-common' })
+    const childlog = logger.child({ package: 'node-common' })
     childlog.info('hoppsan')
     expect(mockOnWrite).not.toHaveBeenCalledTimes(1)
   })
