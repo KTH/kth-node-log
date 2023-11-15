@@ -1,9 +1,11 @@
 {
   "name": "@kth/log",
-  "version": "4.0.0",
+  "version": "4.0.7",
   "description": "Logging module for Node.js applications.",
-  "automaticPublish": "true",
   "main": "index.js",
+  "files": [
+    "dist"
+  ],
   "author": {
     "name": "KTH",
     "email": "infosys@kth.se",
