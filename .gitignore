@@ -8,5 +8,3 @@ node_modules
 
 # Local log files
 *.log
-
-package-lock.json

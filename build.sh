@@ -1,5 +1,5 @@
 #!/bin/bash
 
-npm install
-npm test
-rm -rf node_modules
+set -e
+
+npm ci
