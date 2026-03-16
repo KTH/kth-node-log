@@ -17,8 +17,8 @@
     "url": "https://github.com/KTH/kth-node-log"
   },
   "scripts": {
-    "lint": "eslint \"**/*.js\" --quiet",
-    "lint-v": "eslint \"**/*.js\" ",
+    "lint": "eslint --quiet",
+    "lint-v": "eslint",
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "./build.sh",
@@ -34,8 +34,8 @@
     "syslog"
   ],
   "devDependencies": {
-    "@kth/eslint-config-kth": "^3.6.0",
-    "eslint": "^8.57.1",
+    "@kth/eslint-config-kth": "^4.0.0",
+    "eslint": "^9.39.4",
     "husky": "^7.0.4",
     "jest": "^30.3.0",
     "prettier": "^3.8.1",

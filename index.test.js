@@ -124,7 +124,7 @@ describe(`Logger`, () => {
     expect(mockOnWrite).toHaveBeenCalledTimes(1)
   })
 
-  test('respects level is set to higher ', () => {
+  test('respects level is set to higher', () => {
     log.init({
       level: 40,
       env: 'development',
