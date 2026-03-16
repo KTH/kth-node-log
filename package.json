@@ -22,7 +22,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "build": "./build.sh",
-    "prepare": "bash -c 'if [ -f ./node_modules/.bin/husky ]; then husky install; fi'"
+    "prepare": "husky"
   },
   "dependencies": {
     "bunyan": "^1.8.15",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@kth/eslint-config-kth": "^4.0.0",
     "eslint": "^9.39.4",
-    "husky": "^7.0.4",
+    "husky": "^9.1.7",
     "jest": "^30.3.0",
     "prettier": "^3.8.1",
     "pretty-quick": "^4.2.2"
