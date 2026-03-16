@@ -38,8 +38,8 @@
     "eslint": "^9.39.4",
     "husky": "^9.1.7",
     "jest": "^30.3.0",
-    "prettier": "^3.8.1",
-    "pretty-quick": "^4.2.2"
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1"
   },
   "prettier": {
     "arrowParens": "avoid",
